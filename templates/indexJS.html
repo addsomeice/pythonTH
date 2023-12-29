@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>LST</title>
+<script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+</head>
+<body>
+<div style="width: 400px" height="300px">
+<canvas id="myChart" width="200" height="200"></canvas>
+    </div>
+<div style="width: 400px" height="300px">
+    <canvas id="myChart2" width="400" height="200"></canvas>
+</div>
+<div style="width: 400px" height="300px">
+    <canvas id="myChart3" width="400" height="200"></canvas>
+</div>
+</body>
+<script>
+const ctx = document.getElementById('myChart');
+const labels = ['一月份', '二月份', '三月份','四月份', '五月份', '六月份', '七月份'];  // 设置 X 轴上对应的标签
+const data = {
+  labels: labels,
+  datasets: [{
+    label: '折线图',
+    data: [65, 59, 80, 81, 56, 55, 40],
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)', // 设置线的颜色
+    tension: 0.1
+  }]
+};
+const config = {
+  type: 'line', // 设置图表类型
+  data: data,
+};
+const myChart = new Chart(ctx, config);
+
+const ctx2 = document.getElementById('myChart2');
+const labels2 = ['一月份', '二月份', '三月份','四月份', '五月份', '六月份', '七月份'];  // 设置 X 轴上对应的标签
+const data2 = {
+  labels: labels2,
+  datasets: [{
+    label: '柱形图',
+    data: [65, 59, 80, 81, 56, 55, 40],
+    backgroundColor: [      // 设置每个柱形图的背景颜色
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)'
+    ],
+    borderColor: [     //设置每个柱形图边框线条颜色
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(54, 162, 235)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)'
+    ],
+    borderWidth: 1     // 设置线条宽度
+  }]
+};
+const config2 = {
+  type: 'bar', // 设置图表类型
+  data: data2,  // 设置数据集
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true // 设置 y 轴从 0 开始
+      }
+    }
+  },
+};
+const myChart2 = new Chart(ctx2, config2);
+
+const ctx3 = document.getElementById('myChart3');
+const data3 = {
+  labels: [
+    'Red',
+    'Blue',
+    'Yellow'
+  ],
+  datasets: [{
+    label: '饼图实例',
+    data: [300, 50, 100],
+    backgroundColor: [
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 205, 86)'
+    ],
+    hoverOffset: 4
+  }]
+};
+const config3 = {
+  type: 'pie',
+  data: data3,
+  options: {
+    responsive: true, // 设置图表为响应式，根据屏幕窗口变化而变化
+    maintainAspectRatio: false,// 保持图表原有比例
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero:true
+		}
+	  }]
+    }
+  }
+};
+const myChart3 = new Chart(ctx3, config3);
+</script>
+
+
+</html>

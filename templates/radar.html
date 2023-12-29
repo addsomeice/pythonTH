@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>LST</title>
+<script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js">
+    window.addEventListener('DOMContentLoaded', (event) => {
+            // 页面加载完成后执行操作
+            //var value = "{{ value }}";  // 获取后端传递的值
+            let labelstable=value.labels;
+            var labelone='class';
+            var labeltwo='average';
+            var dataClass=value.dataClass;
+            var dataAverage=value.dataAverage;
+            let ctx = document.getElementById('myChart');
+            const data = {
+                      labels: labelstable ,
+                      datasets: [{
+                        label: labelone,
+                        data: dataClass,
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(255, 99, 132)'
+                      }, {
+                        label: 'average',
+                        data: dataAverage,
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                      }]
+                    };
+            const config = {
+                  type: 'radar',
+                  data: data,
+                  options: {
+                    elements: {
+                      line: {
+                        borderWidth: 3
+                      }
+                    }
+                  },
+                };
+            let myChart = new Chart(ctx, config);
+            console.log("chart");
+
+            // 将结果显示在页面上
+            document.getElementById("result").innerHTML = processedValue;
+        });
+</script>
+</head>
+<body>
+<div>
+<div style="width: 400px" height="300px">
+    <canvas id="myChart" width="300" height="300"></canvas>
+</div>
+</div>>
+</body>
+<script>
+function generateRandomColor() {
+  // 生成随机RGB颜色
+  var r = Math.floor(Math.random() * 256);
+  var g = Math.floor(Math.random() * 256);
+  var b = Math.floor(Math.random() * 256);
+
+  // 将RGB颜色转换为十六进制表示
+  var hexColor = "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+  return hexColor;
+}
+function knnworkBar() {
+        // 获取输入框的值
+        var classes = document.getElementById("class").value;
+        var k = document.getElementById("knn").value;
+        var words = document.getElementById("word").value;
+        // 记录开始时间
+        var startTime = performance.now();
+        // 获取结果容器元素
+        var resultContainer = document.getElementById("result-container");
+        // 清空结果容器
+        resultContainer.innerHTML = "";
+        // 构建请求 URL
+        var url = `/stat/knn_reviews?classes=${encodeURIComponent(classes)}&k=${encodeURIComponent(k)}&words=${encodeURIComponent(words)}`;
+        // 发送 GET 请求
+        fetch(url, {
+            method: 'GET'
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error: ' + response.status);
+                }
+            })
+            .then(function (data) {
+                // 展示结果数据
+                if (data) {
+                    console.log("getget");
+                    // 处理响应数据
+                    let labelsList=[];
+                    let dataList=[];
+                    let backgroundColorList=[];
+                    for (var i = 0; i < data.length; i++) {
+                        var data_work = data[i];
+                        console.log(data_work);
+                        labelsList.push(data_work.class);
+                        dataList.push(data_work.polulation);
+                        backgroundColorList.push(generateRandomColor());
+                        console.log(dataList);
+                        // 创建响应时间元素
+                        // var responseTimeElement = document.createElement("p");
+                        // responseTimeElement.textContent = "Response Time: " + result.response_time + " seconds";
+                        // resultItemContainer.appendChild(responseTimeElement);
+
+                        // 计算响应时间
+                        //var responseTime = performance.now() - startTime;
+                        // 创建响应时间元素
+                        //var timeElement = document.createElement("p");
+                        //timeElement.textContent = "Response Time: " + responseTime + "ms";
+                        // 将响应时间元素添加到结果容器中
+                        //resultItemContainer.appendChild(timeElement);
+                                            }
+                         let ctx = document.getElementById('myChart');
+                         let data3 = {
+                                  labels: labelsList,
+                                  datasets: [{
+                                    label: 'clustering result',
+                                    data: dataList,
+                                    backgroundColor: backgroundColorList,
+                                    hoverOffset: 4
+                                  }]
+                                };
+                         let config = {
+                          type: 'pie',
+                          data: data3,
+                          options: {
+                            onClick: skipRadar
+                          }
+                        };
+                        console.log(config);
+                        let myChart = new Chart(ctx, config);
+                        console.log("chart");
+                                        }
+                                    })
+                                    .catch(function (error) {
+                                        console.log('Error:', error);
+                                    });
+                            }
+function skipRadar(event, elements) {
+  if (elements.length > 0) {
+    // 获取点击的部分索引
+    var clickedIndex = elements[0].index;
+    console.log(clickedIndex);
+    }
+
+}
+
+</script>
+
+
+</html>
