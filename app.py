@@ -69,11 +69,11 @@ def bar():
     print(cityName)
     print(cityState)
     #存 cache
-    # cacheTen_key = f"closest_cities:{cityName}:{cityState}"
-    # cachedTen_result = cache.get(cacheTen_key)
-    # if cachedTen_result is not None:
-    #     resultTen = json.loads(cachedTen_result)
-    #     return jsonify(resultTen)
+    cacheTen_key = f"bar:{cityName}:{cityState}:{page}"
+    cachedTen_result = cache.get(cacheTen_key)
+    if cachedTen_result is not None:
+        resultTen = json.loads(cachedTen_result)
+        return jsonify(resultTen)
 
     if cityName and cityState and page:
         page = int(page)
@@ -165,82 +165,10 @@ def bar():
         slicedCities = cities[startIndex:endIndex]
         result={'cities': slicedCities, 'distances': slicedDistances}
         #cache.set(cacheTen_key, json.dumps(result), ex=60 * 60)
+        cache.set(cacheTen_key, json.dumps(result), ex=60 * 60)
         return jsonify({'cities': slicedCities, 'distances': slicedDistances})
     return jsonify({'error': 'Invalid request'})  # 对于不满足条件的请求，返回无效请求的响应
 
-# @app.route('/line', methods=['GET'])
-# def line():
-#     cityName = request.args.get('cityName')
-#     cityState = request.args.get('cityState')
-#     page = request.args.get('page')
-#     print(cityName)
-#     if cityName and cityState and page:
-#         page = int(page)
-#         print(page)
-#         reviews = get_reviews()
-#
-#         import csv
-#
-#         distance_matrix = {}
-#         csv_folder='./data'
-#         for filename in os.listdir(csv_folder):
-#             if filename.startswith('distance_matrix_') and filename.endswith('.csv'):
-#                 csv_file = os.path.join(csv_folder, filename)
-#
-#         with open(csv_file, mode='r', encoding='utf-8') as file:
-#             reader = csv.reader(file)
-#             next(reader)
-#
-#             for row in reader:
-#                 key = row[0]
-#                 value = float(row[1])
-#                 distance_matrix[key] = value
-#
-#         distances = []
-#         avg_scores = []
-#         cities_list = []
-#         print(reviews)
-#         # print(distance_matrix)
-#         for key, value in distance_matrix.items():
-#             # print(key)
-#             # print(value)
-#             city1, state1, city2, state2 = [part.strip() for part in key.split('_')]
-#             if (cityName == city1 and cityState == state1) or (cityName == city2 and cityState == state2):
-#                 if cityName == city1:
-#                     cities_list.append(f"{city2}-{state2}")
-#                     scores = [float(review['score']) for review in reviews if
-#                               review['city'] == city2]
-#                 else:
-#                     cities_list.append(f"{city1}-{state1}")
-#                     scores = [float(review['score']) for review in reviews if
-#                               review['city'] == city1]
-#
-#                 avg_score = sum(scores) / len(scores) if len(scores) > 0 else 0
-#                 avg_scores.append(avg_score)
-#                 distances.append(value)
-#         print(distances)
-#                 # 按照距离排序
-#         sorted_indices = sorted(range(len(distances)), key=lambda k: distances[k])
-#         sorted_cities = [cities_list[i] for i in sorted_indices]
-#         sorted_avg_scores = [avg_scores[i] for i in sorted_indices]
-#
-#         # 每页10个城市
-#         per_page = 10
-#         start_index = page * per_page
-#         end_index = (page + 1) * per_page
-#
-#         # 提取当前页的城市名和平均评价得分
-#         page_cities = sorted_cities[start_index:end_index]
-#         page_avg_scores = sorted_avg_scores[start_index:end_index]
-#
-#         # 将城市名和平均评价得分传递给前端
-#         result = {
-#             'cities': page_cities,
-#             'avg_scores': page_avg_scores
-#         }
-#
-#         return jsonify(result)
-#     return jsonify({'error': 'Invalid request'})  # 对于不满足条件的请求，返回无效请求的响应
 
 @app.route('/line', methods=['GET'])
 def line():
@@ -248,6 +176,11 @@ def line():
     cityState = request.args.get('cityState')
     page = request.args.get('page')
     print(cityName)
+    caheLine_key = f"line:{cityName}:{cityState}:{page}"
+    cachedLine_result = cache.get(caheLine_key)
+    if cachedLine_result is not None:
+        resultLine = json.loads(cachedLine_result)
+        return jsonify(resultLine)
 
     if cityName and cityState and page:
         page = int(page)
@@ -314,6 +247,7 @@ def line():
             'cities': page_cities,
             'avg_scores': page_avg_scores
         }
+        cache.set(caheLine_key, json.dumps(result), ex=60 * 60)
 
         return jsonify(result)
     return jsonify({'error': 'Invalid request'})  # 对于不满足条件的请求，返回无效请求的响应
@@ -327,6 +261,11 @@ def final():
     print(classes)
     k = request.args.get('k')
     words_num = request.args.get('words')
+    caheKnn_key = f"knn:{classes}:{k}:{words_num}"
+    cachedKnn_result = cache.get(caheKnn_key)
+    if cachedKnn_result is not None:
+         resultknn = json.loads(cachedKnn_result)
+         return jsonify(resultknn)
 
     if classes and k and words_num:
 
@@ -457,6 +396,7 @@ def final():
         # encoded_results = json.dumps(response)
         # # 存入 Redis
         # cache.set(redis_key, encoded_results)
+        cache.set(caheKnn_key, json.dumps(knnResult), ex=60 * 60)
 
         # 返回结果给前端
         return jsonify(response)
