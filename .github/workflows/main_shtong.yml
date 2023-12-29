@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'shtong'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_702F8DEF2A2340489454C760289A3E97 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8AFE62669254C5CA7DE1E532BE70FDC }}
