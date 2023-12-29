@@ -60,66 +60,17 @@ def calculate_distance(lat1, lng1, lat2, lng2):
 
 @app.route('/bar', methods=['GET'])
 def bar():
-    # 获取请求体中的数据
-    # 获取前端提供的城市和州
+
     cityName = request.args.get('cityName')
     cityState = request.args.get('cityState')
     page = request.args.get('page')
 
     print(cityName)
     print(cityState)
-    #存 cache
-    cacheTen_key = f"bar:{cityName}:{cityState}:{page}"
-    cachedTen_result = cache.get(cacheTen_key)
-    if cachedTen_result is not None:
-        resultTen = json.loads(cachedTen_result)
-        return jsonify(resultTen)
+
 
     if cityName and cityState and page:
         page = int(page)
-        # 尝试从缓存中获取结果
-        # redis_key = 'cities'
-        # cached_result = cache.get(redis_key)
-        #
-        # if cached_result is not None:
-        #     cities = json.loads(cached_result)
-        #
-        # 计算城市之间的距离
-        # distance_matrix = {}
-        # visited_cities = set()
-
-        # for i in range(len(cities)):
-        #     city1 = cities[i]
-        #     for j in range(i + 1, len(cities)):
-        #         city2 = cities[j]
-        #         if city1['city'] == city2['city'] and city1['state'] == city2['state']:
-        #             continue  # Skip if the cities are the same
-        #
-        #         distance = calculate_distance(float(city1['lat']), float(city1['lng']), float(city2['lat']),
-        #                                       float(city2['lng']))
-        #
-        #         key1 = f"{city1['city']}_{city1['state']}_{city2['city']}_{city2['state']}"
-        #         key2 = f"{city2['city']}_{city2['state']}_{city1['city']}_{city1['state']}"
-        #
-        #         if key1 not in visited_cities and key2 not in visited_cities:
-        #             distance_matrix[key1] = distance
-        #             visited_cities.add(key1)
-        # print(distance_matrix)
-        # 获取与指定城市相关的其他城市的距离和城市列表
-        # import csv
-        #
-        # # 从 CSV 文件中读取 distance_matrix
-        # csv_file = 'distance_matrix.csv'
-        # distance_matrix = {}
-        #
-        # with open(csv_file, mode='r', encoding='utf-8') as file:
-        #     reader = csv.reader(file)
-        #     next(reader)  # 跳过表头
-        #
-        #     for row in reader:
-        #         key = row[0]
-        #         value = float(row[1])
-        #         distance_matrix[key] = value
 
         distance_matrix = {}
 
@@ -165,7 +116,6 @@ def bar():
         slicedCities = cities[startIndex:endIndex]
         result={'cities': slicedCities, 'distances': slicedDistances}
         #cache.set(cacheTen_key, json.dumps(result), ex=60 * 60)
-        cache.set(cacheTen_key, json.dumps(result), ex=60 * 60)
         return jsonify({'cities': slicedCities, 'distances': slicedDistances})
     return jsonify({'error': 'Invalid request'})  # 对于不满足条件的请求，返回无效请求的响应
 
@@ -265,6 +215,7 @@ def final():
     cachedKnn_result = cache.get(caheKnn_key)
     if cachedKnn_result is not None:
          resultknn = json.loads(cachedKnn_result)
+         knnResult = resultknn
          return jsonify(resultknn)
 
     if classes and k and words_num:
